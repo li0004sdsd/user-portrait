@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 use App\Models\UserPortrait;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 
 class UserPortraitController extends Controller {
@@ -32,7 +33,13 @@ class UserPortraitController extends Controller {
         $data['user_id'] = $request->user()->id;
         $portrait = UserPortrait::create($data);
         if (!empty($tagIds)) {
-            $portrait->tags()->sync($tagIds);
+            try {
+                $portrait->tags()->sync($tagIds);
+            } catch (QueryException $e) {
+                if ($e->getCode() !== '23000') {
+                    throw $e;
+                }
+            }
         }
         return response()->json($portrait->load('tags.category'), 201);
     }
