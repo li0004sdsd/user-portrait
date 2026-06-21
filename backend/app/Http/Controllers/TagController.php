@@ -4,6 +4,7 @@ use App\Models\Tag;
 use App\Models\TagChangeLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class TagController extends Controller {
     public function index(Request $request) {
@@ -15,13 +16,18 @@ class TagController extends Controller {
     }
 
     public function store(Request $request) {
+        $userId = $request->user()->id;
         $data = $request->validate([
-            'tag_category_id' => 'required|integer|exists:tag_categories,id',
+            'tag_category_id' => [
+                'required',
+                'integer',
+                Rule::exists('tag_categories', 'id')->where('user_id', $userId),
+            ],
             'name' => 'required|string|max:255',
             'value' => 'nullable|string|max:255',
             'weight' => 'nullable|integer|min:1|max:10',
         ]);
-        $data['user_id'] = $request->user()->id;
+        $data['user_id'] = $userId;
         return response()->json(Tag::create($data)->load('category'), 201);
     }
 
