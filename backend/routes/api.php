@@ -6,6 +6,7 @@ use App\Http\Controllers\TagCategoryController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\AnalysisController;
 use App\Http\Controllers\RecommendationController;
+use App\Http\Controllers\PortraitExportController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -15,6 +16,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile', [AuthController::class, 'profile']);
     Route::put('/profile', [AuthController::class, 'updateProfile']);
 
+    Route::get('/portraits/export', [PortraitExportController::class, 'export']);
     Route::apiResource('portraits', UserPortraitController::class);
     Route::apiResource('tag-categories', TagCategoryController::class)->except(['show']);
     Route::apiResource('tags', TagController::class)->except(['show']);
