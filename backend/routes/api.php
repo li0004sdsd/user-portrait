@@ -20,5 +20,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('tags', TagController::class)->except(['show']);
 
     Route::get('/analysis', [AnalysisController::class, 'index']);
+    Route::get('/analysis/filter', [AnalysisController::class, 'filter']);
     Route::get('/recommendations', [RecommendationController::class, 'index']);
 });
